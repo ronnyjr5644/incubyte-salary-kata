@@ -1,5 +1,10 @@
 import request from "supertest";
 import app from "../../src/app";
+import prisma from "../../src/lib/prisma";
+
+beforeEach(async () => {
+  await prisma.employee.deleteMany();
+});
 
 describe("GET /metrics/country/:country", () => {
   it("should return salary metrics for a country", async () => {
