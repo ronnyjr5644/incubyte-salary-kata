@@ -11,6 +11,22 @@ app.get("/employees", async (_req, res) => {
   return res.status(200).json(employees);
 });
 
+app.get("/employees/:id", async (req, res) => {
+  const employee = await prisma.employee.findUnique({
+    where: {
+      id: Number(req.params.id),
+    },
+  });
+
+  if (!employee) {
+    return res.status(404).json({
+      message: "Employee not found",
+    });
+  }
+
+  return res.status(200).json(employee);
+});
+
 app.post("/employees",async (req, res) => {
    const { fullName, jobTitle, country, salary } = req.body;
 
