@@ -32,4 +32,20 @@ describe("POST /employees", () => {
     message: "All fields are required",
   });
 });
+it("should return 400 for negative salary", async () => {
+  const response = await request(app)
+    .post("/employees")
+    .send({
+      fullName: "Raunak Raj",
+      jobTitle: "Software Engineer",
+      country: "India",
+      salary: -1000,
+    });
+
+  expect(response.status).toBe(400);
+
+  expect(response.body).toEqual({
+    message: "Salary must be greater than 0",
+  });
+});
 });
