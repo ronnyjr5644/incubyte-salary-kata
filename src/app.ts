@@ -81,6 +81,37 @@ app.delete("/employees/:id", async (req, res) => {
   });
 });
 
+app.get("/employees/:id/salary", async (req, res) => {
+  const employee = await prisma.employee.findUnique({
+    where: {
+      id: Number(req.params.id),
+    },
+  });
+
+  if (!employee) {
+    return res.status(404).json({
+      message: "Employee not found",
+    });
+  }
+
+  let deduction = 0;
+
+  if (employee.country === "India") {
+    deduction = employee.salary * 0.1;
+  } else if (employee.country === "United States") {
+    deduction = employee.salary * 0.12;
+  }
+
+  const netSalary = employee.salary - deduction;
+
+  return res.status(200).json({
+    grossSalary: employee.salary,
+    deduction,
+    netSalary,
+    country: employee.country,
+  });
+});
+
 app.post("/employees",async (req, res) => {
    const { fullName, jobTitle, country, salary } = req.body;
 
