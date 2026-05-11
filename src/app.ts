@@ -57,6 +57,30 @@ app.put("/employees/:id", async (req, res) => {
   return res.status(200).json(updatedEmployee);
 });
 
+app.delete("/employees/:id", async (req, res) => {
+  const employee = await prisma.employee.findUnique({
+    where: {
+      id: Number(req.params.id),
+    },
+  });
+
+  if (!employee) {
+    return res.status(404).json({
+      message: "Employee not found",
+    });
+  }
+
+  await prisma.employee.delete({
+    where: {
+      id: Number(req.params.id),
+    },
+  });
+
+  return res.status(200).json({
+    message: "Employee deleted successfully",
+  });
+});
+
 app.post("/employees",async (req, res) => {
    const { fullName, jobTitle, country, salary } = req.body;
 
