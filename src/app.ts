@@ -27,6 +27,36 @@ app.get("/employees/:id", async (req, res) => {
   return res.status(200).json(employee);
 });
 
+app.put("/employees/:id", async (req, res) => {
+  const { fullName, jobTitle, country, salary } = req.body;
+
+  const existingEmployee = await prisma.employee.findUnique({
+    where: {
+      id: Number(req.params.id),
+    },
+  });
+
+  if (!existingEmployee) {
+    return res.status(404).json({
+      message: "Employee not found",
+    });
+  }
+
+  const updatedEmployee = await prisma.employee.update({
+    where: {
+      id: Number(req.params.id),
+    },
+    data: {
+      fullName,
+      jobTitle,
+      country,
+      salary,
+    },
+  });
+
+  return res.status(200).json(updatedEmployee);
+});
+
 app.post("/employees",async (req, res) => {
    const { fullName, jobTitle, country, salary } = req.body;
 
