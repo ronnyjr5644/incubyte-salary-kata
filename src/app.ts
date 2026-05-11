@@ -1,10 +1,11 @@
 import express from "express";
+import prisma from "./lib/prisma";
 
 const app = express();
 
 app.use(express.json());
 
-app.post("/employees", (req, res) => {
+app.post("/employees",async (req, res) => {
    const { fullName, jobTitle, country, salary } = req.body;
 
   if (!fullName || !jobTitle || !country || salary === undefined) {
@@ -18,7 +19,16 @@ app.post("/employees", (req, res) => {
   });
 }
 
-  return res.status(201).json(req.body);
+   const employee = await prisma.employee.create({
+    data: {
+      fullName,
+      jobTitle,
+      country,
+      salary,
+    },
+  });
+
+  return res.status(201).json(employee);
 });
 
 export default app;
