@@ -21,4 +21,15 @@ describe("POST /employees", () => {
       salary: 100000,
     });
   });
+  it("should return 400 when required fields are missing", async () => {
+  const response = await request(app)
+    .post("/employees")
+    .send({});
+
+  expect(response.status).toBe(400);
+
+  expect(response.body).toEqual({
+    message: "All fields are required",
+  });
+});
 });
