@@ -5,6 +5,12 @@ const app = express();
 
 app.use(express.json());
 
+app.get("/employees", async (_req, res) => {
+  const employees = await prisma.employee.findMany();
+
+  return res.status(200).json(employees);
+});
+
 app.post("/employees",async (req, res) => {
    const { fullName, jobTitle, country, salary } = req.body;
 
