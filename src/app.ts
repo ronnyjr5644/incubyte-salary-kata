@@ -112,6 +112,33 @@ app.get("/employees/:id/salary", async (req, res) => {
   });
 });
 
+app.get("/metrics/job-title/:jobTitle", async (req, res) => {
+  const jobTitle = req.params.jobTitle;
+
+  const employees = await prisma.employee.findMany({
+    where: {
+      jobTitle,
+    },
+  });
+
+  if (employees.length === 0) {
+    return res.status(404).json({
+      message: "No employees found",
+    });
+  }
+
+  const averageSalary =
+    employees.reduce(
+      (sum, employee) => sum + employee.salary,
+      0
+    ) / employees.length;
+
+  return res.status(200).json({
+    jobTitle,
+    averageSalary,
+  });
+});
+
 app.get("/metrics/country/:country", async (req, res) => {
   const country = req.params.country;
 
